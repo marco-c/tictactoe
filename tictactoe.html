@@ -12,13 +12,13 @@ var width, height;
 
 function paintBoard() {
    var board = document.getElementById('board');
-  
+
    width = board.width;
    height = board.height;
    context = board.getContext('2d');
 
    context.beginPath();
-   context.strokeStyle = '#000'; 
+   context.strokeStyle = '#000';
    context.lineWidth   = 4;
 
    context.moveTo((width / 3), 0);
@@ -35,27 +35,27 @@ function paintBoard() {
 
    context.stroke();
    context.closePath();
-  
+
    if (begin) {
       var ini = Math.abs(Math.floor(Math.random() * 9 - 0.1));
       markBit(1 << ini, 'O');
       begin = false;
    } else {
       begin = true;
-   }   
+   }
 }
 
 function checkWinner(board) {
 
    var result = false;
 
-   if (((board | 0x1C0) == board) || ((board | 0x38 ) == board) || 
-	((board | 0x7) == board) || ((board | 0x124) == board) || 
-	((board | 0x92) == board) || ((board | 0x49) == board) || 
-	((board | 0x111) == board) || ((board | 0x54) == board)) {  
+   if (((board | 0x1C0) == board) || ((board | 0x38 ) == board) ||
+	((board | 0x7) == board) || ((board | 0x124) == board) ||
+	((board | 0x92) == board) || ((board | 0x49) == board) ||
+	((board | 0x111) == board) || ((board | 0x54) == board)) {
 
 	result = true;
-   } 
+   }
    return result;
 }
 
@@ -63,7 +63,7 @@ function paintX(x, y) {
 
    context.beginPath();
 
-   context.strokeStyle = '#ff0000'; 
+   context.strokeStyle = '#ff0000';
    context.lineWidth   = 4;
 
    var offsetX = (width / 3) * 0.1;
@@ -76,20 +76,20 @@ function paintX(x, y) {
    var endY = (y + 1) * (height / 3) - offsetY * 2;
 
    context.moveTo(beginX, beginY);
-   context.lineTo(endX, endY); 
+   context.lineTo(endX, endY);
 
    context.moveTo(beginX, endY);
-   context.lineTo(endX, beginY); 	
+   context.lineTo(endX, beginY);
 
    context.stroke();
-   context.closePath(); 
+   context.closePath();
 }
 
 function paintO(x, y) {
-	
+
    context.beginPath();
 
-   context.strokeStyle = '#0000ff'; 
+   context.strokeStyle = '#0000ff';
    context.lineWidth   = 4;
 
    var offsetX = (width / 3) * 0.1;
@@ -109,8 +109,8 @@ function paintO(x, y) {
 
 function clickHandler(e) {
 
-    var y = Math.floor(e.clientY / (height / 3));    
-    var x =  Math.floor(e.clientX / (width/ 3)); 
+    var y = Math.floor(e.clientY / (height / 3));
+    var x =  Math.floor(e.clientX / (width/ 3));
 
     var bit =  (1 << x + ( y * 3 ));
 
@@ -125,22 +125,22 @@ function clickHandler(e) {
 		    restart();
 
 		} else {
-		
+
 	     	   play();
 		   if (!checkNobody()) {
-		     
+
 		       if (checkWinner(oBoard)) {
 			   alert('Loser!!');
 			   restart();
 		        }
 		    }
 	 	}
-	   }	
+	   }
      }
 }
 
 function checkNobody(){
-   if ((xBoard | oBoard) == 0x1FF) {	 
+   if ((xBoard | oBoard) == 0x1FF) {
        alert('Nobody won!!');
        restart();
        return true;
@@ -162,7 +162,7 @@ function isEmpty(xBoard, oBoard, bit) {
 function simulate(oBoard, xBoard) {
 
    var ratio = 0;
- 
+
    var bit = 0;
    for (var i= 0; i < 9; i++) {
 
@@ -175,10 +175,10 @@ function simulate(oBoard, xBoard) {
               break;
 	   } else if (checkWinner(xBoard | cBit)) {
 	      bit = cBit;
-	   } 
+	   }
 	}
    }
-   
+
    if (bit == 0) {
       for (var i= 0; i < 9; i++) {
 	  var cBit = 1 << i;
@@ -191,7 +191,7 @@ function simulate(oBoard, xBoard) {
 	      }
 	   }
        }
-   }	
+   }
    return bit;
 }
 
@@ -204,20 +204,20 @@ function think(oBoard, xBoard, player, bit, ratio) {
    }
 
    if (checkWinner(oBoard)) {
-      ratio *= 1.1; 
+      ratio *= 1.1;
       return ratio;
 
-   } else if (checkWinner(xBoard)) { 
-      
-      ratio *= 0.7; 
+   } else if (checkWinner(xBoard)) {
+
+      ratio *= 0.7;
       return ratio;
 
    } else {
 	var best = 0;
-	ratio *= 0.6; 
+	ratio *= 0.6;
 
 	for (var i= 0; i < 9; i++) {
-		
+
 	   if (isEmpty(xBoard, oBoard, 1 << i)) {
 
                var newRatio = think(oBoard, xBoard, player == 'O' ? 'X' : 'O', 1 << i, ratio);
@@ -233,10 +233,10 @@ function think(oBoard, xBoard, player, bit, ratio) {
 }
 
 function markBit(markBit, player) {
-   
+
    var bit = 1;
    var posX = 0, posY = 0;
-   
+
    while ((markBit & bit) == 0) {
 	bit = bit << 1;
         posX++;
@@ -245,8 +245,8 @@ function markBit(markBit, player) {
             posY++;
         }
    }
-   
-    if (player == 'O') { 
+
+    if (player == 'O') {
         oBoard = oBoard | bit;
 	paintO(posX, posY);
     } else {
@@ -255,10 +255,10 @@ function markBit(markBit, player) {
     }
 }
 
-function play() {  
+function play() {
    var bestBit = simulate(oBoard, xBoard);
    markBit(bestBit, 'O');
-   
+
 }
 </script>
 </body>
