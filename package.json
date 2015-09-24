@@ -1,0 +1,22 @@
+{
+  "name": "tictactoe",
+  "version": "0.0.1",
+  "description": "Tic Tac Toe with offline support",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marco-c/tictactoe.git"
+  },
+  "keywords": [
+    "game",
+    "offline"
+  ],
+  "author": "Marco Castelluccio",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/marco-c/tictactoe/issues"
+  },
+  "homepage": "https://github.com/marco-c/tictactoe#readme"
+}
