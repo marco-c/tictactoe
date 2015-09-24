@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/marco-c/tictactoe/issues"
   },
-  "homepage": "https://github.com/marco-c/tictactoe#readme"
+  "homepage": "https://github.com/marco-c/tictactoe#readme",
+  "dependencies": {
+    "oghliner": "^0.4.1"
+  }
 }
