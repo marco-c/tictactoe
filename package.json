@@ -21,5 +21,8 @@
   "homepage": "https://github.com/marco-c/tictactoe#readme",
   "dependencies": {
     "oghliner": "^0.4.1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0"
   }
 }
