@@ -9,6 +9,10 @@ gulp.task('default', function() {
   fse.copySync('tictactoe.html', 'dist/tictactoe.html');
 });
 
+gulp.task('clean', function() {
+  fse.removeSync('dist');
+});
+
 gulp.task('offline', function(callback) {
   oghliner.offline({
     rootDir: 'dist',
