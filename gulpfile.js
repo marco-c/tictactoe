@@ -6,7 +6,7 @@ gulp.task('default', function() {
   fse.removeSync('dist');
   fse.mkdirSync('dist');
   fse.copySync('js', 'dist/js');
-  fse.copySync('tictactoe.html', 'dist/tictactoe.html');
+  fse.copySync('index.html', 'dist/index.html');
 });
 
 gulp.task('clean', function() {
@@ -17,7 +17,7 @@ gulp.task('offline', function(callback) {
   oghliner.offline({
     rootDir: 'dist',
     fileGlobs: [
-      'tictactoe.html',
+      'index.html',
       'js/**/*.js',
     ],
   }, callback);
