@@ -1,12 +1,17 @@
 var gulp = require('gulp');
 var oghliner = require('oghliner');
+var fse = require('fs-extra');
 
 gulp.task('default', function() {
+  fse.removeSync('dist');
+  fse.mkdirSync('dist');
+  fse.copySync('js', 'dist/js');
+  fse.copySync('tictactoe.html', 'dist/tictactoe.html');
 });
 
 gulp.task('offline', function(callback) {
   oghliner.offline({
-    rootDir: '.',
+    rootDir: 'dist',
     fileGlobs: [
       'tictactoe.html',
       'js/**/*.js',
@@ -16,6 +21,6 @@ gulp.task('offline', function(callback) {
 
 gulp.task('deploy', function(callback) {
   oghliner.deploy({
-    rootDir: '.',
+    rootDir: 'dist',
   }, callback);
 });

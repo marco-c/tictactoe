@@ -23,6 +23,7 @@
     "oghliner": "^0.4.1"
   },
   "devDependencies": {
+    "fs-extra": "^0.24.0",
     "gulp": "^3.9.0"
   }
 }
