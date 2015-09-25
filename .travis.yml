@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+  - '0.10'
+install: npm install
+script: gulp
+env:
+  global:
+    - secure: rjH2VLsYwl9e1g0W8nm2NbAtlU5C9xzVQn5In0zNx7e7YYN1zeWGKjyj25jT1oGzFHNwQ+rekoR5x+dmpzyLI+fMPJ1zfwTfdts8mqNQL5bDtOmzOvc+/LEREzNtPIJWnDQLid8H9AJ5aDLgHqtWVOmKi5x2ipmN1G3BdE7Z/BirZk0lCr5F9b5FeIvcA6xEkvPUfP7VI8vleVU852A5TrrBojOKbojtKgqFxqRDSZ93riAeT/sP2bvXwa8oStR1nbu/TzSd4hgBYTRrx5/XTuE0ZsMqEP3kvOnNkxH5ppBHY2nIUCt97XMmULrmUUyWFyKzHnhkwcVgwXwTGliIkLIVrSo4rD34fviUEOuH1SwosgKRzraTUnbVNYwDKlruK4+LriJdJfoOXQRDRGvYH6RM4L2PsY2q6cnQ6FkmPxHZvj4oz18+ozw80T6nI8Xm0UTpKN2XGTzymIs8HOmWPsgOSsNN6G72qrAIov1+ZXSkMA5ht/Evk4SmDp//18YryKlQs+0NC2fz4yfM4VGsA9Ek3CQ4BFux7ZdP/w7sevhciWO7enQ5fmGpF11hdnEsFYM0vTGcHiOWr83orcPQrH8JrhE1uNZFUR//xsj5OB8GnNCe8yrTaNcM7MlNBiocF+Ud0o/fvVpdRYW4ZiZ1GWgy1fZKM7ZwICCiN6BrnQ0=
+before_script:
+  - 'git config --global user.name "Travis CI"'
+  - 'git config --global user.email "mar.castelluccio@studenti.unina.it"'
+after_success:
+  - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "${TRAVIS_BRANCH}" = "master" ] && gulp deploy'
