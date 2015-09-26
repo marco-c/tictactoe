@@ -7,6 +7,7 @@ gulp.task('default', function() {
   fse.mkdirSync('dist');
   fse.copySync('js', 'dist/js');
   fse.copySync('index.html', 'dist/index.html');
+  fse.copySync('style.css', 'dist/style.css');
 });
 
 gulp.task('clean', function() {

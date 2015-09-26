@@ -2,9 +2,10 @@
 <head>
   <title></title>
   <script src="js/offline-manager.js"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body onload="javascript: paintBoard();">
-<canvas width="500" height="500" id="board" onclick="javascript: clickHandler(event);"></canvas>
+<canvas id="board" onclick="javascript: clickHandler(event);"></canvas>
 <script>
 
 var xBoard = 0;
@@ -16,8 +17,9 @@ var width, height;
 function paintBoard() {
    var board = document.getElementById('board');
 
-   width = board.width;
-   height = board.height;
+   width = board.width  = window.innerWidth;
+   height = board.height = window.innerHeight;
+
    context = board.getContext('2d');
 
    context.beginPath();
