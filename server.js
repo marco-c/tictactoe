@@ -64,11 +64,18 @@ https.createServer(options, function(req, res) {
             player2: opponent,
           });
 
-          // XXX: Choose first player randomly.
-          console.log('send start notification');
-          webPush.sendNotification(opponent.endpoint, opponent.key, JSON.stringify({
-            type: 'start',
-          }));
+          // Choose first player randomly.
+          var firstPlayer = Math.random() >= 0.5 ? opponent : obj;
+
+          console.log('send start notification to ' + firstPlayer.endpoint);
+
+          try {
+            webPush.sendNotification(firstPlayer.endpoint, firstPlayer.key, JSON.stringify({
+              type: 'start',
+            }));
+          } catch (e) {
+            // XXX: Log error.
+          }
         } else {
           waitingUsers.push({
             endpoint: obj.endpoint,
