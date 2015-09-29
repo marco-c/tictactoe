@@ -37,38 +37,6 @@ var options = {
   cert: pem,
 };
 
-function sendNotification(endpoint, userPublicKey, payload) {
-  var encrypted = webPush.encrypt(urlBase64.decode(userPublicKey), payload);
-
-  var urlParts = url.parse(endpoint);
-  var options = {
-    hostname: urlParts.hostname,
-    path: urlParts.pathname,
-    method: 'POST',
-    headers: {
-      'Content-Length': encrypted.cipherText.length,
-      'Content-Type': 'application/octet-stream',
-      'Encryption-Key': 'keyid=p256dh;dh=' + urlBase64.encode(encrypted.localPublicKey),
-      'Encryption': 'keyid=p256dh;salt=' + urlBase64.encode(encrypted.salt),
-      'Content-Encoding': 'aesgcm128',
-    },
-  };
-
-  var pushRequest = https.request(options, function(pushResponse) {
-    if (pushResponse.statusCode !== 201) {
-      console.log("statusCode: ", pushResponse.statusCode);
-      console.log("headers: ", pushResponse.headers);
-    }
-  });
-
-  pushRequest.write(encrypted.cipherText);
-  pushRequest.end();
-
-  pushRequest.on('error', function(e) {
-    console.error(e);
-  });
-}
-
 https.createServer(options, function(req, res) {
   var body = '';
 
@@ -100,7 +68,7 @@ https.createServer(options, function(req, res) {
 
           // XXX: Choose first player randomly.
           console.log('send start notification');
-          sendNotification(opponent.endpoint, opponent.key, JSON.stringify({
+          webPush.sendNotification(opponent.endpoint, opponent.key, JSON.stringify({
             type: 'start',
           }));
         } else {
@@ -132,7 +100,7 @@ https.createServer(options, function(req, res) {
         console.log("send notification for move to " + opponent);
 
         try {
-          sendNotification(opponent.endpoint, opponent.key, JSON.stringify({
+          webPush.sendNotification(opponent.endpoint, opponent.key, JSON.stringify({
             type: 'move',
             x: obj.x,
             y: obj.y,
