@@ -81,91 +81,90 @@ var context;
 var width, height;
 
 function paintBoard() {
-   var board = document.getElementById('board');
+  var board = document.getElementById('board');
 
-   width = board.width  = window.innerWidth;
-   height = board.height = window.innerHeight;
+  width = board.width  = window.innerWidth;
+  height = board.height = window.innerHeight;
 
-   context = board.getContext('2d');
+  context = board.getContext('2d');
 
-   context.beginPath();
-   context.strokeStyle = '#000';
-   context.lineWidth   = 4;
+  context.beginPath();
+  context.strokeStyle = '#000';
+  context.lineWidth   = 4;
 
-   context.moveTo((width / 3), 0);
-   context.lineTo((width / 3), height);
+  context.moveTo((width / 3), 0);
+  context.lineTo((width / 3), height);
 
-   context.moveTo((width / 3) * 2, 0);
-   context.lineTo((width / 3) * 2, height);
+  context.moveTo((width / 3) * 2, 0);
+  context.lineTo((width / 3) * 2, height);
 
-   context.moveTo(0, (height / 3));
-   context.lineTo(width, (height / 3));
+  context.moveTo(0, (height / 3));
+  context.lineTo(width, (height / 3));
 
-   context.moveTo(0, (height / 3) * 2);
-   context.lineTo(width, (height / 3) * 2);
+  context.moveTo(0, (height / 3) * 2);
+  context.lineTo(width, (height / 3) * 2);
 
-   context.stroke();
-   context.closePath();
+  context.stroke();
+  context.closePath();
 }
 
 function checkWinner(board) {
+  var result = false;
 
-   var result = false;
+  if (((board | 0x1C0) == board) || ((board | 0x38 ) == board) ||
+	    ((board | 0x7) == board) || ((board | 0x124) == board) ||
+	    ((board | 0x92) == board) || ((board | 0x49) == board) ||
+	    ((board | 0x111) == board) || ((board | 0x54) == board)) {
+    result = true;
+  }
 
-   if (((board | 0x1C0) == board) || ((board | 0x38 ) == board) ||
-	((board | 0x7) == board) || ((board | 0x124) == board) ||
-	((board | 0x92) == board) || ((board | 0x49) == board) ||
-	((board | 0x111) == board) || ((board | 0x54) == board)) {
-
-	result = true;
-   }
-   return result;
+  return result;
 }
 
 function paintX(x, y) {
-   context.beginPath();
+  context.beginPath();
 
-   context.strokeStyle = '#ff0000';
-   context.lineWidth   = 4;
+  context.strokeStyle = '#ff0000';
+  context.lineWidth   = 4;
 
-   var cellWidth = width / 3;
-   var cellHeight = height / 3;
+  var cellWidth = width / 3;
+  var cellHeight = height / 3;
 
-   var length = cellWidth < cellHeight ? cellWidth : cellHeight;
-   length = length - 0.2 * length;
+  var length = cellWidth < cellHeight ? cellWidth : cellHeight;
+  length = length - 0.2 * length;
 
-   var beginX = x * cellWidth + cellWidth / 2 - length / 2;
-   var beginY = y * cellHeight + cellHeight / 2 - length / 2;
+  var beginX = x * cellWidth + cellWidth / 2 - length / 2;
+  var beginY = y * cellHeight + cellHeight / 2 - length / 2;
 
-   var endX = beginX + length;
-   var endY = beginY + length;
+  var endX = beginX + length;
+  var endY = beginY + length;
 
-   context.moveTo(beginX, beginY);
-   context.lineTo(endX, endY);
+  context.moveTo(beginX, beginY);
+  context.lineTo(endX, endY);
 
-   context.moveTo(beginX, endY);
-   context.lineTo(endX, beginY);
+  context.moveTo(beginX, endY);
+  context.lineTo(endX, beginY);
 
-   context.stroke();
-   context.closePath();
+  context.stroke();
+  context.closePath();
 }
 
 function paintO(x, y) {
-   context.beginPath();
+  context.beginPath();
 
-   context.strokeStyle = '#0000ff';
-   context.lineWidth   = 4;
+  context.strokeStyle = '#0000ff';
+  context.lineWidth   = 4;
 
-   var cellWidth = width / 3;
-   var cellHeight = height / 3;
+  var cellWidth = width / 3;
+  var cellHeight = height / 3;
 
-   var diameter = cellWidth < cellHeight ? cellWidth : cellHeight;
-   diameter = diameter - 0.2 * diameter;
+  var diameter = cellWidth < cellHeight ? cellWidth : cellHeight;
+  diameter = diameter - 0.2 * diameter;
 
-   context.arc(x * cellWidth + cellWidth / 2, y * cellHeight + cellHeight / 2, diameter / 2, 0, Math.PI * 2, true);
+  context.arc(x * cellWidth + cellWidth / 2, y * cellHeight + cellHeight / 2, diameter / 2, 0, Math.PI * 2, true);
 
-   context.stroke();
-   context.closePath();
+  context.stroke();
+  context.closePath();
 }
 
 function clickHandler(e) {
@@ -174,24 +173,21 @@ function clickHandler(e) {
   }
   yourTurn = false;
 
-    var y = Math.floor(e.clientY / (height / 3));
-    var x =  Math.floor(e.clientX / (width/ 3));
+  var y = Math.floor(e.clientY / (height / 3));
+  var x =  Math.floor(e.clientX / (width/ 3));
 
-    var bit =  (1 << x + ( y * 3 ));
+  var bit =  (1 << x + ( y * 3 ));
 
-    if (isEmpty(xBoard, oBoard, bit)) {
+  if (isEmpty(xBoard, oBoard, bit)) {
+	  markBit(bit, 'X');
 
-	markBit(bit, 'X')
-
-        if (!checkNobody())  {
-		if (checkWinner(xBoard)) {
-
-		    alert('You win!!');
+    if (!checkNobody())  {
+		  if (checkWinner(xBoard)) {
+        alert('You win!!');
 		    restart();
-
-		}
-	   }
-     }
+		  }
+	  }
+  }
 
   sendReq({
     type: 'move',
@@ -201,124 +197,116 @@ function clickHandler(e) {
   });
 }
 
-function checkNobody(){
-   if ((xBoard | oBoard) == 0x1FF) {
-       alert('Nobody won!!');
-       restart();
-       return true;
-   }
-   return false;
+function checkNobody() {
+  if ((xBoard | oBoard) == 0x1FF) {
+    alert('Nobody won!!');
+    restart();
+    return true;
+  }
+
+  return false;
 }
 
 function restart() {
-   context.clearRect (0, 0, width , height);
-   xBoard = 0;
-   oBoard = 0;
-   paintBoard();
+  context.clearRect(0, 0, width, height);
+  xBoard = 0;
+  oBoard = 0;
+  paintBoard();
 }
 
 function isEmpty(xBoard, oBoard, bit) {
-   return (((xBoard & bit) == 0) && ((oBoard & bit) == 0));
+  return (((xBoard & bit) == 0) && ((oBoard & bit) == 0));
 }
 
 function simulate(oBoard, xBoard) {
+  var ratio = 0;
 
-   var ratio = 0;
-
-   var bit = 0;
-   for (var i= 0; i < 9; i++) {
-
-        var cBit = 1 << i;
-
-	if (isEmpty(xBoard, oBoard, cBit)) {
-
-           if (checkWinner(oBoard | cBit)) {
-	      bit = cBit;
-              break;
-	   } else if (checkWinner(xBoard | cBit)) {
-	      bit = cBit;
-	   }
-	}
-   }
-
-   if (bit == 0) {
-      for (var i= 0; i < 9; i++) {
-	  var cBit = 1 << i;
+  var bit = 0;
+  for (var i= 0; i < 9; i++) {
+    var cBit = 1 << i;
 
 	  if (isEmpty(xBoard, oBoard, cBit)) {
-	      var result = think(oBoard, xBoard, 'X', 0, 1)
+      if (checkWinner(oBoard | cBit)) {
+	      bit = cBit;
+        break;
+	    } else if (checkWinner(xBoard | cBit)) {
+        bit = cBit;
+	    }
+	  }
+  }
+
+  if (bit == 0) {
+    for (var i= 0; i < 9; i++) {
+	    var cBit = 1 << i;
+
+	    if (isEmpty(xBoard, oBoard, cBit)) {
+	      var result = think(oBoard, xBoard, 'X', 0, 1);
 	      if (ratio == 0 || ratio < result) {
-	         ratio = result;
-	         bit = cBit;
+	        ratio = result;
+	        bit = cBit;
 	      }
-	   }
-       }
-   }
-   return bit;
+	    }
+    }
+  }
+
+  return bit;
 }
 
 function think(oBoard, xBoard, player, bit, ratio) {
+  if (player == 'O') {
+	  oBoard = oBoard | bit;
+  } else {
+	  xBoard = xBoard | bit;
+  }
 
-   if (player == 'O') {
-	oBoard = oBoard | bit;
-   } else {
-	xBoard = xBoard | bit;
-   }
+  if (checkWinner(oBoard)) {
+    ratio *= 1.1;
+    return ratio;
+  }
 
-   if (checkWinner(oBoard)) {
-      ratio *= 1.1;
-      return ratio;
+  if (checkWinner(xBoard)) {
+    ratio *= 0.7;
+    return ratio;
+  }
 
-   } else if (checkWinner(xBoard)) {
-
-      ratio *= 0.7;
-      return ratio;
-
-   } else {
 	var best = 0;
 	ratio *= 0.6;
+  for (var i= 0; i < 9; i++) {
+	  if (isEmpty(xBoard, oBoard, 1 << i)) {
+      var newRatio = think(oBoard, xBoard, player == 'O' ? 'X' : 'O', 1 << i, ratio);
 
-	for (var i= 0; i < 9; i++) {
-
-	   if (isEmpty(xBoard, oBoard, 1 << i)) {
-
-               var newRatio = think(oBoard, xBoard, player == 'O' ? 'X' : 'O', 1 << i, ratio);
-
-               if (best == 0 || best < newRatio) {
-		  best = newRatio;
-               }
+      if (best == 0 || best < newRatio) {
+	      best = newRatio;
+      }
 	  }
  	}
 
 	return best;
-   }
 }
 
 function markBit(markBit, player) {
+  var bit = 1;
+  var posX = 0, posY = 0;
 
-   var bit = 1;
-   var posX = 0, posY = 0;
-
-   while ((markBit & bit) == 0) {
-	bit = bit << 1;
-        posX++;
-	if (posX > 2) {
-            posX = 0;
-            posY++;
-        }
-   }
-
-    if (player == 'O') {
-        oBoard = oBoard | bit;
-	paintO(posX, posY);
-    } else {
-        xBoard = xBoard | bit;
-	paintX(posX, posY);
+  while ((markBit & bit) == 0) {
+    bit = bit << 1;
+    posX++;
+	  if (posX > 2) {
+      posX = 0;
+      posY++;
     }
+  }
+
+  if (player == 'O') {
+    oBoard = oBoard | bit;
+	  paintO(posX, posY);
+  } else {
+    xBoard = xBoard | bit;
+	  paintX(posX, posY);
+  }
 }
 
 function play() {
-   var bestBit = simulate(oBoard, xBoard);
-   markBit(bestBit, 'O');
-
+  var bestBit = simulate(oBoard, xBoard);
+  markBit(bestBit, 'O');
 }
