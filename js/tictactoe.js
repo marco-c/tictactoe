@@ -12,7 +12,16 @@ function sendReq(obj) {
   });
 }
 
-var endpoint;
+var endpoint, key;
+
+function sendRegister() {
+  sendReq({
+    type: 'register',
+    endpoint: endpoint,
+    key: btoa(String.fromCharCode.apply(null, new Uint8Array(key))),
+  });
+}
+
 var yourTurn = false;
 var gameStarted = false;
 
@@ -26,7 +35,7 @@ navigator.serviceWorker.ready.then(function(reg) {
         gameStarted = true;
         yourTurn = true;
         alert('Please start');
-      break;
+        break;
 
       case "move":
         if (yourTurn) {
@@ -45,7 +54,12 @@ navigator.serviceWorker.ready.then(function(reg) {
 
         gameStarted = true;
         yourTurn = true;
-      break;
+        break;
+
+      case 'end':
+        // XXX: Show an alert if the notification arrived before the game was finished
+        restart();
+        break;
     }
   }
   reg.active.postMessage('setup', [channel.port2]);
@@ -61,12 +75,9 @@ navigator.serviceWorker.ready.then(function(reg) {
   });
 }).then(function(subscription) {
   endpoint = subscription.endpoint;
+  key = subscription.getKey('p256dh');
 
-  sendReq({
-    type: "register",
-    endpoint: subscription.endpoint,
-    key: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey("p256dh")))),
-  });
+  sendRegister();
 });
 
 window.onload = function() {
@@ -181,6 +192,13 @@ function clickHandler(e) {
   if (isEmpty(xBoard, oBoard, bit)) {
 	  markBit(bit, 'X');
 
+    sendReq({
+      type: 'move',
+      endpoint: endpoint,
+      x: x,
+      y: y,
+    });
+
     if (!checkNobody())  {
 		  if (checkWinner(xBoard)) {
         alert('You win!!');
@@ -188,13 +206,6 @@ function clickHandler(e) {
 		  }
 	  }
   }
-
-  sendReq({
-    type: 'move',
-    endpoint: endpoint,
-    x: x,
-    y: y,
-  });
 }
 
 function checkNobody() {
@@ -212,6 +223,7 @@ function restart() {
   xBoard = 0;
   oBoard = 0;
   paintBoard();
+  sendRegister();
 }
 
 function isEmpty(xBoard, oBoard, bit) {
