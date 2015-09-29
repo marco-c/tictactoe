@@ -69,6 +69,12 @@ navigator.serviceWorker.ready.then(function(reg) {
   });
 });
 
+window.onload = function() {
+  paintBoard();
+
+  document.getElementById("board").onclick = clickHandler;
+};
+
 var xBoard = 0;
 var oBoard = 0;
 var context;
