@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/marco-c/tictactoe#readme",
   "dependencies": {
-    "oghliner": "^0.4.1",
+    "oghliner": "^0.7.0",
     "urlsafe-base64": "^1.0.0",
     "web-push": "0.0.2"
   },
