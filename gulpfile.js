@@ -21,6 +21,7 @@ gulp.task('offline', function(callback) {
       'index.html',
       'js/**/*.js',
     ],
+    importScripts: ['js/sw-push.js'],
   }, callback);
 });
 
