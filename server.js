@@ -1,8 +1,6 @@
 const fs        = require('fs');
 const https     = require('https');
-const url       = require('url');
 const webPush   = require('web-push');
-const urlBase64 = require('urlsafe-base64');
 
 if (!Array.prototype.find) {
   Array.prototype.find = function(predicate) {
