@@ -9,9 +9,21 @@ self.addEventListener('notificationclick', function(event) {
 });
 
 self.addEventListener('push', function(event) {
-  event.waitUntil(self.registration.showNotification('TicTacToe', {
-    body: 'It\'s your turn!',
-    tag: 'tictactoe',
+  event.waitUntil(clients.matchAll().then(function(clientList) {
+    var focused = false;
+    for (var i = 0; i < clientList.length; i++) {
+      if (clientList[i].focused) {
+        focused = true;
+        break;
+      }
+    }
+
+    if (!focused) {
+      return self.registration.showNotification('TicTacToe', {
+        body: 'It\'s your turn!',
+        tag: 'tictactoe',
+      });
+    }
   }));
 
   port.postMessage(event.data.json());
