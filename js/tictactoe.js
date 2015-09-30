@@ -47,9 +47,13 @@ function checkEndGame() {
     return;
   }
 
-  context.clearRect(0, 0, width, height);
-  paintBoard();
-  sendRegister();
+  gameRegistered = false;
+
+  if (confirm('Play again?')) {
+    context.clearRect(0, 0, width, height);
+    paintBoard();
+    sendRegister();
+  }
 
   xBoard = oBoard = 0;
   yourTurn = false;
