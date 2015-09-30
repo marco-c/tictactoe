@@ -119,41 +119,6 @@ https.createServer(options, function(req, res) {
         }
 
         break;
-
-      case 'end':
-        var opponent;
-        for (var i = 0; i < matches.length; i++) {
-          var match = matches[i];
-
-          if (match.player1.endpoint === obj.endpoint) {
-            opponent = match.player2;
-            matches.splice(i, 1);
-            break;
-          }
-
-          if (match.player2.endpoint === obj.endpoint) {
-            opponent = match.player1;
-            matches.splice(i, 1);
-            break;
-          }
-        }
-
-        if (!opponent) {
-          console.error('end - no opponent found');
-          return;
-        }
-
-        console.log('send notification for end to ' + opponent);
-
-        try {
-          webPush.sendNotification(opponent.endpoint, opponent.key, JSON.stringify({
-            type: 'end',
-          }));
-        } catch (e) {
-          // XXX: Log error.
-        }
-
-        break;
     }
   });
 
