@@ -14,51 +14,119 @@ function sendReq(obj) {
 
 var endpoint, key;
 
+var gameRegistered = false;
+var yourTurn = false;
+var xBoard = 0;
+var oBoard = 0;
+
 function sendRegister() {
   sendReq({
     type: 'register',
     endpoint: endpoint,
     key: btoa(String.fromCharCode.apply(null, new Uint8Array(key))),
+  }).then(function() {
+    gameRegistered = true;
   });
 }
 
-var yourTurn = false;
-var gameStarted = false;
+function startGame() {
+  yourTurn = true;
+  oBoard = xBoard = 0;
+  localforage.setItem('game', [ gameRegistered, yourTurn, xBoard, oBoard ]);
+}
 
-navigator.serviceWorker.ready.then(function(reg) {
+function checkEndGame() {
+  if (checkWinner(xBoard)) {
+    alert('You won!');
+  } else if (checkNobody()) {
+    alert('Nobody won!');
+  } else if (checkWinner(oBoard)) {
+    alert('You lost!');
+  } else {
+    // Game hasn't ended.
+    return;
+  }
+
+  gameRegistered = false;
+
+  if (confirm('Play again?')) {
+    context.clearRect(0, 0, width, height);
+    paintBoard();
+    sendRegister();
+  }
+
+  xBoard = oBoard = 0;
+  yourTurn = false;
+  localforage.setItem('game', [ gameRegistered, yourTurn, xBoard, oBoard ]);
+}
+
+function opponentMove(x, y) {
+  if (yourTurn) {
+    return;
+  }
+
+  var bit = (1 << x + (y * 3));
+
+  if (!isEmpty(xBoard, oBoard, bit)) {
+    return;
+  }
+
+  markBit(bit, 'O');
+
+  if (checkEndGame()) {
+    return;
+  }
+
+  yourTurn = true;
+
+  localforage.setItem('game', [ gameRegistered, yourTurn, xBoard, oBoard ]);
+}
+
+function yourMove(x, y) {
+  if (!yourTurn) {
+    return;
+  }
+  yourTurn = false;
+
+  var bit = (1 << x + (y * 3));
+
+  if (!isEmpty(xBoard, oBoard, bit)) {
+    return;
+  }
+
+	markBit(bit, 'X');
+
+  sendReq({
+    type: 'move',
+    endpoint: endpoint,
+    x: x,
+    y: y,
+  });
+
+  if (checkEndGame()) {
+    return;
+  }
+
+  localforage.setItem('game', [ gameRegistered, yourTurn, xBoard, oBoard ]);
+}
+
+var subscriptionPromise = navigator.serviceWorker.ready.then(function(reg) {
   var channel = new MessageChannel();
   channel.port1.onmessage = function(e) {
     var obj = e.data;
 
     switch (obj.type) {
       case "start":
-        gameStarted = true;
-        yourTurn = true;
+        startGame();
         alert('Please start');
         break;
 
       case "move":
-        if (yourTurn) {
-          break;
-        }
-
-        var bit =  (1 << obj.x + (obj.y * 3));
-        markBit(bit, 'O');
-
-        if (!checkNobody()) {
-          if (checkWinner(oBoard)) {
-            alert('Loser!');
-            restart();
-          }
-        }
-
-        gameStarted = true;
-        yourTurn = true;
+        opponentMove(obj.x, obj.y);
         break;
 
       case 'end':
         // XXX: Show an alert if the notification arrived before the game was finished
-        restart();
         break;
     }
   }
@@ -76,18 +144,43 @@ navigator.serviceWorker.ready.then(function(reg) {
 }).then(function(subscription) {
   endpoint = subscription.endpoint;
   key = subscription.getKey('p256dh');
-
-  sendRegister();
 });
 
 window.onload = function() {
   paintBoard();
 
-  document.getElementById("board").onclick = clickHandler;
+  document.getElementById('board').onclick = clickHandler;
+
+  var localforagePromise = localforage.getItem('game').then(function(game) {
+    if (game === null) {
+      xBoard = 0;
+      oBoard = 0;
+      return;
+    }
+
+    gameRegistered = game[0];
+    yourTurn = game[1];
+    xBoard = game[2];
+    oBoard = game[3];
+
+    for (var i= 0; i < 9; i++) {
+      var bit = 1 << i;
+      if ((xBoard & bit) === bit) {
+        markBit(bit, 'X');
+      } else if ((oBoard & bit) === bit) {
+        markBit(bit, 'O');
+      }
+    }
+  });
+
+  Promise.all([ localforagePromise, subscriptionPromise ]).then(function() {
+    if (!gameRegistered) {
+      sendRegister();
+      return;
+    }
+  });
 };
 
-var xBoard = 0;
-var oBoard = 0;
 var context;
 var width, height;
 
@@ -179,51 +272,14 @@ function paintO(x, y) {
 }
 
 function clickHandler(e) {
-  if (!yourTurn) {
-    return;
-  }
-  yourTurn = false;
-
   var y = Math.floor(e.clientY / (height / 3));
   var x =  Math.floor(e.clientX / (width/ 3));
 
-  var bit =  (1 << x + ( y * 3 ));
-
-  if (isEmpty(xBoard, oBoard, bit)) {
-	  markBit(bit, 'X');
-
-    sendReq({
-      type: 'move',
-      endpoint: endpoint,
-      x: x,
-      y: y,
-    });
-
-    if (!checkNobody())  {
-		  if (checkWinner(xBoard)) {
-        alert('You win!!');
-		    restart();
-		  }
-	  }
-  }
+  yourMove(x, y);
 }
 
 function checkNobody() {
-  if ((xBoard | oBoard) == 0x1FF) {
-    alert('Nobody won!!');
-    restart();
-    return true;
-  }
-
-  return false;
-}
-
-function restart() {
-  context.clearRect(0, 0, width, height);
-  xBoard = 0;
-  oBoard = 0;
-  paintBoard();
-  sendRegister();
+  return (xBoard | oBoard) === 0x1FF;
 }
 
 function isEmpty(xBoard, oBoard, bit) {
