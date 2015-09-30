@@ -6,6 +6,7 @@ gulp.task('default', function() {
   fse.removeSync('dist');
   fse.mkdirSync('dist');
   fse.copySync('js', 'dist/js');
+  fse.copySync('node_modules/localforage/dist/localforage.min.js', 'dist/js/localforage.min.js');
   fse.copySync('index.html', 'dist/index.html');
   fse.copySync('style.css', 'dist/style.css');
 });
