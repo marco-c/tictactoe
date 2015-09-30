@@ -110,6 +110,8 @@ function yourMove(x, y) {
   localforage.setItem('game', [ gameRegistered, yourTurn, xBoard, oBoard ]);
 }
 
+Notification.requestPermission();
+
 var subscriptionPromise = navigator.serviceWorker.ready.then(function(reg) {
   var channel = new MessageChannel();
   channel.port1.onmessage = function(e) {
