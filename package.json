@@ -22,7 +22,7 @@
   "dependencies": {
     "localforage": "^1.2.10",
     "oghliner": "^0.7.0",
-    "web-push": "0.0.6"
+    "web-push": "0.0.7"
   },
   "devDependencies": {
     "commander": "^2.8.1",
