@@ -70,7 +70,7 @@ https.createServer(options, function(req, res) {
           console.log('send start notification to ' + firstPlayer.endpoint);
 
           try {
-            webPush.sendNotification(firstPlayer.endpoint, firstPlayer.key, JSON.stringify({
+            webPush.sendNotification(firstPlayer.endpoint, 200, firstPlayer.key, JSON.stringify({
               type: 'start',
             }));
           } catch (e) {
