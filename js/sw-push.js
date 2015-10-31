@@ -4,6 +4,8 @@ self.addEventListener('notificationclick', function(event) {
   event.waitUntil(clients.matchAll().then(function(clientList) {
     if (clientList.length > 0) {
       return clientList[0].focus();
+    } else {
+      return clients.openWindow('index.html');
     }
   }));
 });
