@@ -2,8 +2,9 @@ var gulp = require('gulp');
 var oghliner = require('oghliner');
 var fse = require('fs-extra');
 
-gulp.task('default', function() {
-  fse.removeSync('dist');
+gulp.task('default', ['clean', 'build', 'offline']);
+
+gulp.task('build', function() {
   fse.mkdirSync('dist');
   fse.copySync('js', 'dist/js');
   fse.copySync('node_modules/localforage/dist/localforage.min.js', 'dist/js/localforage.min.js');
