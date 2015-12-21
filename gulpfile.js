@@ -16,7 +16,7 @@ gulp.task('clean', function() {
   fse.removeSync('dist');
 });
 
-gulp.task('offline', function(callback) {
+gulp.task('offline', function() {
   return oghliner.offline({
     rootDir: 'dist',
     fileGlobs: [
@@ -27,7 +27,7 @@ gulp.task('offline', function(callback) {
   });
 });
 
-gulp.task('deploy', function(callback) {
+gulp.task('deploy', function() {
   return oghliner.deploy({
     rootDir: 'dist',
   });
