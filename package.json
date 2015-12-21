@@ -21,12 +21,12 @@
   "homepage": "https://github.com/marco-c/tictactoe#readme",
   "dependencies": {
     "localforage": "^1.2.10",
-    "oghliner": "^1.0.2",
     "web-push": "0.0.11"
   },
   "devDependencies": {
     "commander": "^2.8.1",
     "fs-extra": "^0.24.0",
-    "gulp": "^3.9.0"
+    "gulp": "^3.9.0",
+    "oghliner": "^1.0.2"
   }
 }
