@@ -10,7 +10,6 @@ Uses [oghliner](https://github.com/mozilla/oghliner) for offline support and the
 ```
 npm install
 gulp
-gulp offline
 ```
 
 ## Run the app
