@@ -16,18 +16,18 @@ gulp.task('clean', function() {
 });
 
 gulp.task('offline', function(callback) {
-  oghliner.offline({
+  return oghliner.offline({
     rootDir: 'dist',
     fileGlobs: [
       'index.html',
       'js/**/*.js',
     ],
     importScripts: ['js/sw-push.js'],
-  }, callback);
+  });
 });
 
 gulp.task('deploy', function(callback) {
-  oghliner.deploy({
+  return oghliner.deploy({
     rootDir: 'dist',
-  }, callback);
+  });
 });
